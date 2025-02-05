@@ -3,10 +3,10 @@
 from flask import Flask, request
 import main
 import os
-
+import sys
 app = Flask(__name__)
-
-@app.route('/process', methods=['POST'])
+sys.path.append('/app/DigiEDraw')
+@app.route('/app/DigiEDraw', methods=['POST'])
 def process():
     data = request.json
     uuid = data['uuid']
