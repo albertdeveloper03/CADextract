@@ -12,9 +12,8 @@ services:
       - FLASK_APP=views.py
       - FLASK_ENV=production
       - REDIS_HOST=redis
-      - DIGIEDRAW_HOST=http://processor:5001
-      - PATH_EXTRACTION=/app/main.py
-      - PATH_BASE=/app
+      - PATH_EXTRACTION=/app/DigiEDraw/main.py
+      - PATH_BASE=/app/
     volumes:
       - ./ui-master/static:/app/static
       - ./ui-master/templates:/app/templates
