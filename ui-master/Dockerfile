@@ -9,11 +9,14 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy requirements first for better caching
-COPY requirements.txt .
+COPY requirements.txt . 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy the ui-master application code
+COPY ui-master/ .
+
+# Copy the DigiEDraw folder from the parent directory
+COPY ../DigiEDraw /app/DigiEDraw
 
 # Create necessary directories
 RUN mkdir -p /app/temporary
