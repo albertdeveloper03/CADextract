@@ -20,6 +20,7 @@ services:
       - shared-storage:/app/temporary
       - ./ui-master/css:/app/css
       - ./ui-master/js:/app/js
+      - ./DigiEDraw:/app/DigiEDraw
     depends_on:
       - redis
       - processor
