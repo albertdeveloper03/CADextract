@@ -122,7 +122,7 @@ def check_links(isos):
     return link_names, isos_names
 
 
-@app.route('/extraction', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def extraction():
     if request.method == 'POST':
         file = request.files['file']

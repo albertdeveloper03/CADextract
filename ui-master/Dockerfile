@@ -20,7 +20,7 @@ RUN mkdir -p /app/temporary
 
 # Update paths in views.py
 RUN sed -i 's|C:/Users/alalb/ui-master|/app|g' views.py && \
-    sed -i 's|C:/Users/alalb/DigiEDraw/main.py|/app/processor/main.py|g' views.py && \
+    sed -i 's|C:/Users/alalb/DigiEDraw/main.py|/app/DigiEDraw/main.py|g' views.py && \
     sed -i 's|localhost|redis|g' views.py
 
 EXPOSE 5000
