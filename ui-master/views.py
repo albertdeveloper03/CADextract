@@ -22,7 +22,7 @@ import os
 import json
 import re
 import base64
-import requests
+
 #from . import app
 
 from flask import Flask
@@ -76,17 +76,8 @@ def convert_pdf_img(filename):
 
 #HOLA
 def extract_all(uuid, filename, db):
-    
-    processor_url = 'http://processor:5001/process'
-    data = {
-        'uuid': uuid,
-        'filepath': UPLOAD_FOLDER + "/" + filename,
-        'db': db,
-        'eps': '0'
-    }
-    response = requests.post(processor_url, json=data)
-    if response.status_code != 200:
-        raise Exception(f"Processor error: {response.text}")
+    subprocess.call(['python', path_extraction, str(uuid),UPLOAD_FOLDER + "/" + filename, db, str(0)])
+
 
 def get_file_size(file):
     pdf = PyPDF2.PdfReader(file) #CHANGE
