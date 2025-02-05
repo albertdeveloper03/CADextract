@@ -5,8 +5,8 @@ import main
 import os
 import sys
 app = Flask(__name__)
-sys.path.append('/app/DigiEDraw')
-@app.route('/app/DigiEDraw', methods=['POST'])
+
+@app.route('/process', methods=['POST'])
 def process():
     data = request.json
     uuid = data['uuid']
