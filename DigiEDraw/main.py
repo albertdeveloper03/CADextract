@@ -26,7 +26,8 @@ import numpy as np
 import os
 
 # Set the config path relative to the main.py file
-config_path = "C:/Users/alalb/DigiEDraw"
+config_path = os.getenv('CONFIG_PATH', '/app')
+
 
 
 def distance_knn(dm):

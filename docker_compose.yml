@@ -13,7 +13,7 @@ services:
       - FLASK_ENV=production
       - REDIS_HOST=redis
       - DIGIEDRAW_HOST=http://processor:5001
-      - PATH_EXTRACTION=/app/DigiEDraw/main.py
+      - PATH_EXTRACTION=/app/processor/main.py
       - PATH_BASE=/app
     volumes:
       - ./ui-master/static:/app/static
