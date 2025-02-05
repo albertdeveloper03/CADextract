@@ -32,8 +32,8 @@ app.debug = True
 
 
 path = "/app"
-db_params = os.getenv('REDIS_HOST', 'localhost')
-path_extraction = os.getenv('PATH_EXTRACTION', '/app/processor/main.py')
+db_params = os.getenv('REDIS_HOST', 'redis')
+path_extraction = os.getenv('PATH_EXTRACTION', '/app/DigiEDraw/main.py')
 path_image = os.path.join(path, "temporary")
 
 # Create necessary directories
