@@ -1,0 +1,149 @@
+body, h1, h2, h3, h4, h5, h6, p, a, div, span, input, button, table, th, td {
+  font-family: 'Arial', sans-serif;
+}
+.features-container {
+  width: 1000px;
+  margin: auto;
+  margin-bottom:100px;
+  padding: 20px;
+}
+
+.features-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 20px;
+  flex-wrap: nowrap;  /* Prevent wrapping */
+}
+
+.feature-card {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  min-width: 200px; /* Ensure minimum width */
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 15px;
+  border: 2px solid #2563eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+  color: #2563eb;
+}
+
+.feature-title {
+  color: #1f2937;
+  font-size: 15px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.feature-description {
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+.upload-area {
+  width: 500px;
+border: 2px dashed #ccc;
+margin:auto;
+border-radius: 8px;
+padding: 20px;
+text-align: center;
+cursor: pointer;
+transition: border-color 0.1s ease, color 0.1s ease;
+}
+
+.upload-area:hover {
+border-color: lightblue;
+color: rgb(51, 113, 199);
+background-color: rgba(237, 246, 255, 0.5);
+border: 2px solid blue;
+}
+.logo {
+  width: 40px;
+  margin-right: 10px;
+}
+.footer {
+  bottom: 0;
+  width: 100%;
+  background: #f8f9fa;
+  padding: 20px 0;
+  text-align: center;
+}
+.content {
+  min-height: calc(100vh - 180px);
+}
+.description {
+  color: #666;
+  margin-bottom: 30px;
+}
+.navbar-nav .nav-link {
+  font-size: 0.875rem; /* Smaller font size */
+}
+image{
+  margin-top:30px;
+}
+.red{
+background: red;
+opacity: 0.4;
+position: absolute;
+left: 0px;
+top: 0px;
+}
+
+.green{
+background: green;
+opacity: 0.2;
+width: 20;
+height: 20px;
+position: absolute;
+left: 0px;
+top: 0px;
+}
+
+.frame {
+  flex: 1 1 auto;
+  border: 0;
+  height: 50%;
+  width: 100%;
+}
+
+table {
+  padding: 10px;
+  margin:auto;
+  background-color: white;
+  }
+  td{
+    padding: 5px;
+  }
+
+#measurements{
+  padding: 30px;
+}
+#datacolumn { padding: 0; }
+
+.navbar {
+    margin-bottom: 1rem;
+}
+
+.logo {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5rem;
+}
+
+.navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 500;
+}

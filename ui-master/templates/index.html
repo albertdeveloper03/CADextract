@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>CAD Data Extractor</title>
+
+    <!-- libs, do not modify. When local than load local libs. -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/jquery.browser.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/jquery.svg.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/jquery.svgdom.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/vkbeautify.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/printf.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs//strftime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/parsequery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/underscore.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/jquery.caret.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/jquery.cookie.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/redis_set_get.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js_libs/ui.js') }}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link   rel="stylesheet"      href="{{ url_for('static', filename='css/ui.css') }}" type="text/css"/>
+      
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css"/>
+
+  <body is="x-ui">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1976D2; padding: 1rem 0;">
+      <div class="container">
+          <a class="navbar-brand d-flex align-items-center" href="#">
+              <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
+                  <path d="M3 17h18v2H3zm0-7h18v5H3zm0-4h18v2H3z"/>
+              </svg>
+              CADXtract
+          </a>
+          <div class="navbar-nav d-flex flex-row gap-4">
+            <a class="nav-link {% if request.endpoint == 'extraction' %}active{% endif %}" href="{{ url_for('extraction') }}">Extract dimensions</a>
+            <a class="nav-link {% if request.endpoint == 'dxf_to_pdf' %}active{% endif %}" href="{{ url_for('dxf_to_pdf') }}">Convert DXF to PDF</a>
+          </div>
+      </div>
+  </nav>
+    <ui-rest id="main">
+      
+      <ui-content>
+        <ui-area id='datacolumn' style="min-width: 600px">
+     
+         
+     
+    
+          <ui-content>
+              <ui-area data-belongs-to-tab="drawing" >
+                  <div class="images" style="max-width: 100%; overflow: hidden;">
+                  <img  class="optcontent" id="drawing" src="{{ url_for('send_file', filename=filename) }}" alt="Drawing" style="max-height: 550px; width: auto;">
+                  </div>
+
+              </ui-area>
+
+          </ui-content>
+        </ui-area>
+       
+        <ui-area id="detailcolumn1" data-minsize="20em">
+            
+            <div id="dat_details" class='x-ui-layout'>
+
+                <div class="column-one" style="width:50%;float:left">
+
+                  {{ html_links | safe }}
+
+                {% for iso in isos_names %}
+                    {{ iso }} (Document not available)<br>
+                {% endfor %}
+
+                </div>
+                <div class="column-two" style="width:50%;float:right">
+
+                {{ html_general | safe }}
+                </div>
+            </div>
+          <div id="measurements">
+                <div>
+                <form>
+                <table>
+                  <tr>
+                    <td colspan="3" >Select each input to visualize location on drawing</td>
+                  </tr>
+                    <tr>
+                        <td style="text-align:center; font-weight: bold; font-size: 1.2em;">Target Value</td>
+                        <td style="text-align:center; font-weight: bold; font-size: 1.2em;">Actual Value</td>
+                        <td style="text-align:center; font-weight: bold; font-size: 1.2em;">Relevant Isos</td>
+                    </tr>
+                  
+
+                        {{ text | safe}}
+
+                </table>
+                </form>
+                </div>
+
+           </div>
+        </ui-area>
+      </ui-content>
+    </ui-rest>
+<script>
+
+    $(document).ready(function(){
+
+        $("input[type=number]").on("change keyup input", function(){
+            var array_value = [];
+            array_value[0] = $(this).attr('name');
+            array_value[1] = $(this).val();
+
+            var key = 'last' + "_" +'{{og_filename}}';
+
+            //console.log({{ dim }});
+            set_redis(key, array_value);
+        });
+
+        $("input[type=number]").focus(function(){
+            var number = $(this).attr('name');
+            var coords = $(this).attr('data-coords');
+            highlight_areas(coords, "red");
+            var detail = $(this).attr('data-details');
+            console.log(detail, "green");
+            highlight_details(detail, "green");
+
+        });
+
+        $("input[type=number]").blur(function(){
+
+          $("div").removeClass("red");
+          $("div").removeClass("green");
+
+        });
+
+      $("ui-area").scroll(function(){
+          $("input[type=number]").blur();
+          $("div").removeClass("red");
+          $("div").removeClass("green");
+
+      });
+
+      // Highlight all areas at the beginning
+      $("input[type=number]").each(function(){
+          var coords = $(this).attr('data-coords');
+          highlight_areas(coords, "red");
+      });
+
+      function highlight_areas(coords, color){
+
+       w = {{w}};
+       h = {{h}};
+       pos = $("#drawing").position();
+       drawing_x = pos.left;
+       drawing_y = pos.top;
+       array_coords = coords.split(",");
+       coords_x = parseFloat(array_coords[0]);
+       let coords_xmax = parseFloat(array_coords[2]);
+       coords_y = parseFloat(array_coords[1]);
+       let coords_ymax = parseFloat(array_coords[3]);
+       let coords_width = (coords_xmax - coords_x);
+       let coords_height = (coords_ymax - coords_y);
+       width = $("#drawing").width();
+       height = $("#drawing").height();
+       rel_width = coords_width/h*width*1.4;
+       rel_height = coords_height/w*height*1.4;
+       var orientation = "{{orientation}}";
+       var x = 0;
+       var y = 0;
+
+       if (orientation == "landscape"){
+           // x = width*(coords_x*height/width/w);
+           x = (coords_x*height/w);
+           // y = height*(coords_y*width/height/h);
+           y = (coords_y*width/h);
+       }
+       else {
+
+            x = width*(coords_x/w);
+            y = height*(coords_y/h);
+       }
+
+       let $point1 = jQuery("<div class="+color+"/>").css({top: (drawing_y + y -5) + 'px', left: (drawing_x + x-5) + 'px', width: rel_width , height: rel_height});
+        $(".images").append($point1);
+        };
+
+       function highlight_details(coords, color){
+       w = {{w}};
+       h = {{h}};
+       let pos = $("#drawing").position();
+       let drawing_x = pos.left;
+       let drawing_y = pos.top;
+       let array_coords = coords.split(",");
+       let coords_x = parseFloat(array_coords[0]);
+       let coords_y = parseFloat(array_coords[1]);
+       let width_div = (parseFloat(array_coords[2]) - parseFloat(array_coords[0]));
+
+       let height_div = (parseFloat(array_coords[3]) - parseFloat(array_coords[1]));
+       let width = $("#drawing").width();
+       let rel_width = width_div/h*width;
+       let height = $("#drawing").height();
+       let rel_height = height*height_div/w;
+       let x = width*(coords_x*height/width/w);
+       let y= height*(coords_y*width/height/h);
+       console.log(rel_width, rel_height);
+       if (array_coords[3] > 10000) {
+           rel_height = height - y;
+       }
+
+       let $point = jQuery("<div class="+color+"/>").css({top: (drawing_y + y) + 'px', left: (drawing_x + x) + 'px', width: (rel_width) + 'px', height: (rel_height) + 'px'});
+
+        $(".images").append($point);
+        };
+     });
+
+  </script>
+  </body>
+</html>

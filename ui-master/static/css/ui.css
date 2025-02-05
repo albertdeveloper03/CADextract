@@ -1,0 +1,79 @@
+
+
+
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  color: var(--x-ui-dark-color);
+  margin: 0;
+  padding: 0;
+  background-color: rgb(242, 242, 242);
+}
+
+*[is=x-ui] {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  color: var(--x-ui-light-text-color);
+  overflow: auto;
+}
+
+*[is=x-ui] textarea, input, select, button {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+}
+
+
+
+
+*[is=x-ui] input {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  padding: 0.3rem;
+  border: 1px solid var(--x-ui-border-color);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 0.1rem rgba(164, 164, 164, 0.25);
+}
+*[is=x-ui] input::placeholder {
+  color: var(--x-ui-secondary-color);
+}
+
+*[is=x-ui] a {
+  color:white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+*[is=x-ui] ui-rest {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0 auto;
+  flex: 1 1 auto;
+  width: 80%;
+}
+
+
+*[is=x-ui] ui-content {
+
+  padding: 1rem;
+  margin: 0;
+  border-radius: 0.25rem;
+}
+
+*[is=x-ui] ui-rest > ui-content {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+}
+
+

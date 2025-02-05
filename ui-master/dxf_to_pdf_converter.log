@@ -1,0 +1,8 @@
+2025-02-04 13:45:37,306 - INFO - Starting conversion of example.dxf
+2025-02-04 13:45:39,309 - INFO - creating ACAD_COLOR dictionary
+2025-02-04 13:45:39,309 - INFO - creating ACAD_MATERIAL dictionary
+2025-02-04 13:45:39,310 - INFO - creating ACAD_MLEADERSTYLE dictionary
+2025-02-04 13:45:39,310 - INFO - creating ACAD_SCALELIST dictionary
+2025-02-04 13:45:39,311 - INFO - creating ACAD_TABLESTYLE dictionary
+2025-02-04 13:45:39,311 - INFO - creating ACAD_VISUALSTYLE dictionary
+2025-02-04 13:46:03,058 - INFO - Successfully converted example.dxf to output.pdf

@@ -1,0 +1,63 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  ui:
+    build:
+      context: ./ui-master
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=views.py
+      - FLASK_ENV=production
+      - REDIS_HOST=redis
+      - DIGIEDRAW_HOST=http://processor:5001
+      - PATH_EXTRACTION=/app/processor/main.py
+      - PATH_BASE=/app
+    volumes:
+      - ./ui-master/static:/app/static
+      - ./ui-master/templates:/app/templates
+      - shared-storage:/app/temporary
+      - ./ui-master/css:/app/css
+      - ./ui-master/js:/app/js
+    depends_on:
+      - redis
+      - processor
+    networks:
+      - app-network
+
+  processor:
+    build:
+      context: ./DigiEDraw
+      dockerfile: Dockerfile
+    expose:
+      - "5001"
+    environment:
+      - REDIS_HOST=redis
+      - CONFIG_PATH=/app
+    volumes:
+      - shared-storage:/app/temporary
+      - ./DigiEDraw/config:/app/config
+      - ./DigiEDraw/drawings:/app/drawings
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+volumes:
+  redis-data:
+  shared-storage:
+
+networks:
+  app-network:
+    driver: bridge

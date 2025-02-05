@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .drawing-container {
+            position: relative;
+            width: 3396px;
+            height: 1064px;
+            border: 1px solid #ccc;
+            margin: 20px;
+        }
+        .measurement {
+            position: absolute;
+            background-color: rgba(255, 255, 0, 0.3);
+            padding: 2px 4px;
+            border: 1px solid #666;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .measurement:hover {
+            background-color: rgba(255, 255, 0, 0.6);
+        }
+        .measurement-table {
+            margin: 20px;
+            border-collapse: collapse;
+        }
+        .measurement-table th, .measurement-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .measurement-table th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="drawing-container">
+    </div>
+    <table class="measurement-table">
+        <tr>
+            <th>Measurement</th>
+            <th>Position (X, Y)</th>
+            <th>Confidence</th>
+        </tr>
+    </table>
+    <script>
+        // Add interactivity
+        document.querySelectorAll('.measurement').forEach(elem => {
+            elem.addEventListener('click', () => {
+                alert(`Measurement: ${elem.innerText}\nPosition: (${elem.style.left}, ${elem.style.top})\nConfidence: ${elem.title}`);
+            });
+        });
+    </script>
+</body>
+</html>

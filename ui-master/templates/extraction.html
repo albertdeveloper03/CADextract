@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Extract dimensions and tables from CAD drawings automatically. Support for DWG, DXF formats. Try free.">
+    <meta name="keywords" content="CAD dimension extraction, DWG table extractor, AutoCAD data mining, CAD drawings, DWG extractor, DXF converter">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css"/>
+
+    
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "CAD Data Extractor",
+      "applicationCategory": "CAD Software",
+      "operatingSystem": "Web-based",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Extract dimensions and tables from CAD drawings automatically. Support for DWG, DXF formats.",
+      "featureList": [
+        "Dimension extraction",
+        "Table extraction",
+        "DWG support",
+        "DXF support",
+        "Automated processing"
+      ]
+    }
+    </script>
+    <title>Automated CAD Dimension & Table Extraction | CAD Data Extractor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5f69fe;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
+                    <path d="M3 17h18v2H3zm0-7h18v5H3zm0-4h18v2H3z"/>
+                </svg>
+                CADXtract
+            </a>
+            <div class="navbar-nav d-flex flex-row gap-4">
+                <a class="nav-link {% if request.endpoint == 'extraction' %}active{% endif %}" href="{{ url_for('extraction') }}">Extract dimensions</a>
+                <a class="nav-link {% if request.endpoint == 'dxf_to_pdf' %}active{% endif %}" href="{{ url_for('dxf_to_pdf') }}">Convert DXF to PDF</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content container">
+        <h2 class="text-center mt-5 mb-3">Extract dimensions from CAD drawings</h2>
+        <p class="text-center description">Quickly extract dimensions and tables from your CAD drawings. Supports PDF format.</p>
+        <div class="upload-area" id="drop-zone">
+            <form action="" method="post" enctype="multipart/form-data" id="upload-form">
+                <input type="file" name="file" id="fileInput" hidden>
+            </form>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 16 16">
+                <path fill="blue" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                <path fill="blue" d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+            </svg>
+            <p class="mt-3">Drop your files here</p>
+        </div>
+        <div class="features-container">
+            <div class="features-row">
+                <div class="feature-card">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Precise Measurements</h3>
+                    <p class="feature-description">Extract exact measurements from your CAD files with unparalleled precision. Our advanced algorithm ensures every dimension is captured accurately, making it perfect for engineering projects, architectural designs, and detailed technical drawings. Save time and eliminate manual measurement errors.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Instant Results</h3>
+                    <p class="feature-description">Experience lightning-fast measurement extraction with our optimized processing engine. No more waiting or manual calculations - get all your dimensions instantly with just a single click. Perfect for large projects where time efficiency is crucial. The tool processes complex CAD files in seconds.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Reliable Accuracy</h3>
+                    <p class="feature-description">Trust in consistent and accurate results every time. Our tool maintains precision across all measurement extractions, ensuring you get reliable data for your projects. Whether you're working on small components or large assemblies, every measurement is guaranteed to be precise and trustworthy.</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('fileInput');
+            const form = document.getElementById('upload-form');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    form.submit();
+                }
+            });
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('upload-area-hover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('upload-area-hover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileInput.files = e.dataTransfer.files;
+                form.submit();
+            });
+        </script>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">© 2025 CAD Converter. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
