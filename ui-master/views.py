@@ -39,7 +39,7 @@ import os
 # Use environment variables for configuration
 path = os.getenv('APP_PATH', '/app')
 db_params = os.getenv('DB_PARAMS', 'redis')
-path_extraction = os.path.join(path, 'DigiEDraw/main.py')
+path_extraction =  'DigiEDraw/main.py'
 path_image = os.path.join(path, 'temporary')
 
 UPLOAD_FOLDER = os.path.join(path, 'temporary/')
