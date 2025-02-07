@@ -1,29 +1,44 @@
-# Dockerfile for ui-master
+# Use the official Python image from the Docker Hub
 FROM python:3.9-slim
 
-# Install system dependencies including pdftoppm
-RUN apt-get update && apt-get install -y \
-    poppler-utils \
-    && rm -rf /var/lib/apt/lists/*
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH=/app
+ENV APP_PATH=/app
+ENV DB_PARAMS=localhost
+ENV FLASK_ENV=development
+ENV MPLBACKEND=Agg
 
+# Set the working directory
 WORKDIR /app
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    poppler-utils \
+    python3-dev \
+    build-essential \
+    libcairo2-dev \
+    pkg-config \
+    python3-tk \
+    libfreetype6-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container
+COPY requirements.txt /app/
+
+# Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Create and set permissions for temporary directory
+RUN mkdir -p /app/temporary && chmod 777 /app/temporary
 
-COPY DigiEDraw /app/DigiEDraw
-# Create necessary directories
-RUN mkdir -p /app/temporary
+# Copy the entire project into the container
+COPY . /app/
 
-# Update paths in views.py
-RUN sed -i 's|C:/Users/alalb/ui-master|/app|g' views.py && \
-    sed -i 's|C:/Users/alalb/DigiEDraw/main.py|/app/DigiEDraw/main.py|g' views.py && \
-    sed -i 's|localhost|redis|g' views.py
-
+# Expose the port the app runs on
 EXPOSE 5000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "views:app"]
+# Run the application
+CMD ["flask", "run", "--host=0.0.0.0"]

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License along with
 # DigiEDraw.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import request, redirect, url_for, send_from_directory, render_template
+from flask import request, redirect, url_for, send_from_directory, render_template, send_file, make_response
 import subprocess
 import redis
 import random
@@ -22,6 +22,9 @@ import os
 import json
 import re
 import base64
+import tempfile
+from convert import DXFtoPDFConverter
+import logging
 
 #from . import app
 
@@ -31,34 +34,109 @@ from flask import Flask
 app = Flask(__name__, static_url_path="", static_folder="static")
 app.debug = True
 
+import os
 
-path = "/app"
-db_params = os.getenv('REDIS_HOST', 'redis')
-path_extraction = os.getenv('PATH_EXTRACTION', '/app/DigiEDraw/main.py')
-path_image = os.path.join(path, "temporary")
+# Use environment variables for configuration
+path = os.getenv('APP_PATH', '/app')
+db_params = os.getenv('DB_PARAMS', 'redis')
+path_extraction = os.path.join(path, 'DigiEDraw/main.py')
+path_image = os.path.join(path, 'temporary')
 
-# Create necessary directories
-os.makedirs(path_image, exist_ok=True)
-
-UPLOAD_FOLDER = os.path.join(path, "temporary")
+UPLOAD_FOLDER = os.path.join(path, 'temporary/')
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'PDF'])
+
 #path = "C:/Users/alalb/ui-master"
 #db_params = "localhost"
-#path_extraction = 'C:/Users/alalb/DigiEDraw/main.py'
+#path_extraction = './DigiEDraw/main.py'
 #path_image = path + "/temporary"
 #
 #
 #UPLOAD_FOLDER = path + "/temporary/"
 #app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-#ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'PDF'])
+ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'PDF'])
 
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-
-
-@app.route('/dxf_to_pdf')
+@app.route('/dxf_to_pdf', methods=['GET', 'POST'])
 def dxf_to_pdf():
-   return render_template('dxf_to_pdf.html')
+    logger.info("DXF to PDF route accessed")
+    logger.info(f"Request method: {request.method}")
+    
+    if request.method == 'POST':
+        logger.info("POST request received")
+        logger.info(f"Files in request: {request.files}")
+        
+        # Check if file was uploaded
+        if 'file' not in request.files:
+            logger.error("No file part in request")
+            return render_template('dxf_to_pdf.html', error="No file uploaded")
+        
+        file = request.files['file']
+        logger.info(f"Received file: {file.filename}")
+        
+        # Check if file was selected
+        if file.filename == '':
+            logger.error("No file selected")
+            return render_template('dxf_to_pdf.html', error="No file selected")
+        
+        # Check file extension
+        if not file.filename.lower().endswith('.dxf'):
+            logger.error("Invalid file type")
+            return render_template('dxf_to_pdf.html', error="Please upload a DXF file")
+        
+        try:
+            logger.info("Starting file processing")
+            # Create temporary files for input and output
+            with tempfile.NamedTemporaryFile(suffix='.dxf', delete=False) as temp_input:
+                logger.info(f"Created temporary input file: {temp_input.name}")
+                file.save(temp_input.name)
+                temp_input_name = temp_input.name
+            
+            with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_output:
+                logger.info(f"Created temporary output file: {temp_output.name}")
+                temp_output_name = temp_output.name
+
+            # Convert DXF to PDF
+            logger.info("Starting DXF to PDF conversion")
+            converter = DXFtoPDFConverter(temp_input_name, temp_output_name)
+            success = converter.convert()
+            
+            if success:
+                logger.info("Conversion successful")
+                # Read the PDF file
+                with open(temp_output_name, 'rb') as pdf_file:
+                    pdf_data = pdf_file.read()
+                
+                # Create the response object
+                output_filename = f"{os.path.splitext(file.filename)[0]}.pdf"
+                response = make_response(pdf_data)
+                response.headers['Content-Type'] = 'application/pdf'
+                response.headers['Content-Disposition'] = f'attachment; filename="{output_filename}"'
+                return response
+            else:
+                logger.error("Conversion failed")
+                return render_template('dxf_to_pdf.html', error="Conversion failed")
+                
+        except Exception as e:
+            logger.error(f"Error during conversion: {str(e)}", exc_info=True)
+            return render_template('dxf_to_pdf.html', error=f"Error during conversion: {str(e)}")
+        
+        finally:
+            # Clean up temporary files
+            try:
+                if 'temp_input_name' in locals():
+                    os.unlink(temp_input_name)
+                    logger.info(f"Cleaned up input file: {temp_input_name}")
+                if 'temp_output_name' in locals():
+                    os.unlink(temp_output_name)
+                    logger.info(f"Cleaned up output file: {temp_output_name}")
+            except Exception as e:
+                logger.error(f"Error cleaning up temporary files: {str(e)}")
+    
+    logger.info("Rendering template")
+    return render_template('dxf_to_pdf.html')
 
 
 
