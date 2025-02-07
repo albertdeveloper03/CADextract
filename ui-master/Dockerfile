@@ -2,8 +2,8 @@
 FROM python:3.9-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH=/app
 ENV APP_PATH=/app
 ENV DB_PARAMS=localhost
@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
-COPY requirements.txt .
+COPY requirements.txt /app/
 
 # Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -35,10 +35,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p /app/temporary && chmod 777 /app/temporary
 
 # Copy the entire project into the container
-COPY . .
+COPY . /app/
 
 # Expose the port the app runs on
 EXPOSE 5000
 
-# Run the application with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--chdir", "/app", "views:app"]
+# Run the application
+CMD ["flask", "run", "--host=0.0.0.0"]
