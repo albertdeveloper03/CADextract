@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
-COPY requirements.txt /app/
+COPY requirements.txt .
 
 # Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -35,10 +35,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p /app/temporary && chmod 777 /app/temporary
 
 # Copy the entire project into the container
-COPY . /app/
+COPY . .
 
 # Expose the port the app runs on
 EXPOSE 5000
 
-# Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "views:app"]
+# Run the application with Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--chdir", "/app", "views:app"]
