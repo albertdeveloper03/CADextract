@@ -37,6 +37,8 @@ RUN mkdir -p /app/temporary && chmod 777 /app/temporary
 # Copy the entire project into the container
 COPY . /app/
 
+COPY ui-master/DigiEDraw /app/DigiEDraw
+
 # Expose the port the app runs on
 EXPOSE 5000
 
